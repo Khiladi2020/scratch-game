@@ -26,7 +26,7 @@ export default function GameCanvas() {
             }}
         >
             <View
-                style={[styles.container, { height: containerMaxHeight }]}
+                style={[styles.canvas, { height: containerMaxHeight }]}
                 onLayout={(e) => {
                     // measure the container dimensions
                     if (containerDimensions == null) {
@@ -48,7 +48,10 @@ export default function GameCanvas() {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor: "lightgrey",
+    canvas: {
+        backgroundColor: "white",
+        borderColor: "#D8D8D8",
+        borderWidth: 2,
+        borderRadius: 8,
     },
 });
