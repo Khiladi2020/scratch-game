@@ -3,18 +3,20 @@ import { useContext } from "react";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
     clamp,
+    runOnJS,
     useAnimatedStyle,
+    useDerivedValue,
     useSharedValue,
 } from "react-native-reanimated";
 
-const Sprite = () => {
+const Sprite = (props) => {
     // Shared values
     const start = useSharedValue({ x: 0, y: 0 });
     const position = useSharedValue({ x: 0, y: 0 });
 
     // Hooks
     const contextValue = useContext(GameContext);
-    console.log("context value", contextValue?.height);
+    // console.log("context value", contextValue?.height);
 
     // Local Variables
     const spriteHeight = 50;
@@ -40,12 +42,22 @@ const Sprite = () => {
                 y: clamp(currentY, minY, maxY!),
             };
 
+            // console.log(props.detailsRef);
+
+            // Update Details
+            // runOnJS((val) => {
+            //     if (props?.detailsRef?.current) {
+            //         console.log(" here i am", val);
+            //         // props.detailsRef.current.updatePositionX(val);
+            //     }
+            // })(position.value.x);
+
             // Log
-            console.log(
-                "my current value",
-                clamp(currentX, minX, maxX!),
-                clamp(currentY, minY, maxY!)
-            );
+            // console.log(
+            //     "my current value",
+            //     clamp(currentX, minX, maxX!),
+            //     clamp(currentY, minY, maxY!)
+            // );
         })
         .onEnd(() => {
             start.value = {
@@ -53,6 +65,17 @@ const Sprite = () => {
                 y: position.value.y,
             };
         });
+
+    console.log("Sprite re-rendered");
+    const aa = (val, val2) => {
+        if (props?.updateX) {
+            props?.updateX(val, val2);
+        }
+    };
+
+    useDerivedValue(() => {
+        runOnJS(aa)(position.value.x, position.value.y);
+    });
 
     // Animated Styles
     const animatedStyles = useAnimatedStyle(() => {

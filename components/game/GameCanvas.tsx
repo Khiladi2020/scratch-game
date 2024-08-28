@@ -7,9 +7,13 @@ import Animated, {
 } from "react-native-reanimated";
 import Sprite from "./Sprite";
 import GameContext from "@/context/GameContext";
-import { useState } from "react";
+import React, { useState } from "react";
 
-export default function GameCanvas() {
+interface GameCanvasProps {
+    updateX: () => {};
+}
+
+export default function GameCanvas(props: GameCanvasProps) {
     const { height, width } = useWindowDimensions();
     const [containerDimensions, setContainerDimensions] = useState<{
         height: number;
@@ -40,8 +44,8 @@ export default function GameCanvas() {
                     }
                 }}
             >
-                <Sprite />
-                <Sprite />
+                <Sprite updateX={props.updateX} />
+                <Sprite updateX={props.updateX} />
             </View>
         </GameContext.Provider>
     );
