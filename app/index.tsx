@@ -1,4 +1,5 @@
 import GameCanvas from "@/components/game/GameCanvas";
+import SpriteDetails from "@/components/game/SpriteDetails";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { StyleSheet } from "react-native";
@@ -10,6 +11,7 @@ const HomeScreen = () => {
         <GestureHandlerRootView>
             <SafeAreaView style={styles.container}>
                 <GameCanvas />
+                <SpriteDetails />
                 <ThemedText>Helll</ThemedText>
             </SafeAreaView>
         </GestureHandlerRootView>
@@ -21,6 +23,7 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 8,
         backgroundColor: "#E8E8E8",
+        gap: 8,
     },
 });
 
