@@ -2,6 +2,7 @@ import GameContext from "@/context/GameContext";
 import { useContext } from "react";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
+    clamp,
     useAnimatedStyle,
     useSharedValue,
 } from "react-native-reanimated";
@@ -23,15 +24,26 @@ const Sprite = () => {
             console.log("Pan started");
         })
         .onUpdate((e) => {
-            console.log("my current value", e.translationX);
-            const newX = start.value.x + e.translationX;
-            const newY = start.value.y + e.translationY;
+            const currentX = start.value.x + e.translationX;
+            const currentY = start.value.y + e.translationY;
+
+            const minX = 0,
+                minY = 0;
+            const maxX = contextValue?.width! - spriteHeight,
+                maxY = contextValue?.height! - spriteHeight;
 
             // update the value
             position.value = {
-                x: newX,
-                y: newY,
+                x: clamp(currentX, minX, maxX!),
+                y: clamp(currentY, minY, maxY!),
             };
+
+            // Log
+            console.log(
+                "my current value",
+                clamp(currentX, minX, maxX!),
+                clamp(currentY, minY, maxY!)
+            );
         })
         .onEnd(() => {
             start.value = {
@@ -58,6 +70,7 @@ const Sprite = () => {
                         height: spriteHeight,
                         width: spriteHeight,
                         backgroundColor: "tomato",
+                        position: "absolute",
                         zIndex: -1,
                     },
                     animatedStyles,
