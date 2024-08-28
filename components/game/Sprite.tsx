@@ -29,8 +29,10 @@ const Sprite = () => {
 
             const minX = 0,
                 minY = 0;
-            const maxX = contextValue?.width! - spriteHeight,
-                maxY = contextValue?.height! - spriteHeight;
+
+            // maxX = width - sprite width - borderRadius
+            const maxX = contextValue?.width! - spriteHeight - 4,
+                maxY = contextValue?.height! - spriteHeight - 4;
 
             // update the value
             position.value = {
