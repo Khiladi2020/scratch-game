@@ -2,8 +2,27 @@ import globalStyles from "@/constants/globalStyles";
 import { ThemedText } from "../ThemedText";
 import { ThemedView } from "../ThemedView";
 import { StyleSheet, TextInput } from "react-native";
+import { forwardRef, useImperativeHandle, useState } from "react";
 
-const SpriteDetails = () => {
+const SpriteDetails = forwardRef((props, ref) => {
+    const [positionX, setPositionX] = useState(0);
+    const [positionY, setPositionY] = useState(0);
+
+    useImperativeHandle(ref, () => {
+        return {
+            updatePositionX: (val: number) => {
+                // console.log(" i am called bro", val);
+                setPositionX(val);
+            },
+
+            updatePositionY: (val: number) => {
+                setPositionY(val);
+            },
+        };
+    });
+
+    console.log(" details re-rendered ");
+
     return (
         <ThemedView style={[globalStyles.borderBox, styles.container]}>
             <ThemedView style={styles.itemContainer}>
@@ -15,18 +34,18 @@ const SpriteDetails = () => {
             <ThemedView style={styles.itemContainer}>
                 <ThemedText style={styles.itemTitle}>X</ThemedText>
                 <ThemedView style={styles.valueBox}>
-                    <ThemedText>12.4</ThemedText>
+                    <ThemedText>{positionX}</ThemedText>
                 </ThemedView>
             </ThemedView>
             <ThemedView style={styles.itemContainer}>
                 <ThemedText style={styles.itemTitle}>Y</ThemedText>
                 <ThemedView style={styles.valueBox}>
-                    <ThemedText>18.44</ThemedText>
+                    <ThemedText>{positionY}</ThemedText>
                 </ThemedView>
             </ThemedView>
         </ThemedView>
     );
-};
+});
 
 const styles = StyleSheet.create({
     container: {
@@ -42,8 +61,8 @@ const styles = StyleSheet.create({
     valueBox: {
         borderRadius: 16,
         borderWidth: 2,
-        padding: 8,
         paddingVertical: 4,
+        paddingHorizontal: 12,
         borderColor: "#D8D8D8",
     },
     itemTitle: {
