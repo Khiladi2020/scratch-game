@@ -1,14 +1,17 @@
 import GameCanvas from "@/components/game/GameCanvas";
 import SpriteDetails from "@/components/game/SpriteDetails";
+import SpriteManager from "@/components/game/SpriteManager";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { useRef } from "react";
+import { INITIAL_SPRITES } from "@/constants/initialSprites";
+import { useRef, useState } from "react";
 import { StyleSheet } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 const HomeScreen = () => {
     const spriteDetailsRef = useRef(null);
+    const [sprites] = useState(INITIAL_SPRITES);
 
     const updateValue = (valX, valY) => {
         // console.log("updated value of raivl", val);
@@ -23,8 +26,9 @@ const HomeScreen = () => {
     return (
         <GestureHandlerRootView>
             <SafeAreaView style={styles.container}>
-                <GameCanvas updateX={updateValue} />
+                <GameCanvas updateX={updateValue} sprites={sprites} />
                 <SpriteDetails ref={spriteDetailsRef} />
+                <SpriteManager sprites={sprites} />
                 <ThemedText>Helll</ThemedText>
             </SafeAreaView>
         </GestureHandlerRootView>

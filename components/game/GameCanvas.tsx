@@ -8,9 +8,11 @@ import Animated, {
 import Sprite from "./Sprite";
 import GameContext from "@/context/GameContext";
 import React, { useState } from "react";
+import { SpriteCardProps } from "./SpriteManager";
 
 interface GameCanvasProps {
     updateX: () => {};
+    sprites: Array<SpriteCardProps>;
 }
 
 export default function GameCanvas(props: GameCanvasProps) {
@@ -44,8 +46,9 @@ export default function GameCanvas(props: GameCanvasProps) {
                     }
                 }}
             >
-                <Sprite updateX={props.updateX} />
-                <Sprite updateX={props.updateX} />
+                {props.sprites.map((ele) => {
+                    return <Sprite updateX={props.updateX} />;
+                })}
             </View>
         </GameContext.Provider>
     );
