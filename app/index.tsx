@@ -5,11 +5,15 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { INITIAL_SPRITES } from "@/constants/initialSprites";
 import { useRef, useState } from "react";
-import { StyleSheet } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import Cat from "@/assets/svg/cat.svg";
+import SvgImages from "@/constants/SvgImages";
+import { router, useLocalSearchParams, useNavigation } from "expo-router";
 
 const HomeScreen = () => {
+    const params = useLocalSearchParams();
     const spriteDetailsRef = useRef(null);
     const [sprites] = useState(INITIAL_SPRITES);
 
@@ -21,25 +25,35 @@ const HomeScreen = () => {
         }
     };
 
-    console.log("parent re rendered");
+    const onSelectSprite = (item) => {
+        console.log("sprite seletecd bro", item);
+    };
+
+    const onNewSpriteAddClick = () => {
+        router.push({ pathname: "/selectSprite" });
+    };
 
     return (
         <GestureHandlerRootView>
-            <SafeAreaView style={styles.container}>
-                <GameCanvas updateX={updateValue} sprites={sprites} />
-                <SpriteDetails ref={spriteDetailsRef} />
-                <SpriteManager sprites={sprites} />
-                <ThemedText>Helll</ThemedText>
+            <SafeAreaView style={styles.application}>
+                <ScrollView contentContainerStyle={styles.container}>
+                    <GameCanvas updateX={updateValue} />
+                    <SpriteDetails ref={spriteDetailsRef} />
+                    <SpriteManager onNewSpriteAddClick={onNewSpriteAddClick} />
+                    <ThemedText>Helll</ThemedText>
+                    <SvgImages.Bat />
+                </ScrollView>
             </SafeAreaView>
         </GestureHandlerRootView>
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 8,
+    application: {
         backgroundColor: "#E8E8E8",
+    },
+    container: {
+        padding: 8,
         gap: 8,
     },
 });

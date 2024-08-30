@@ -1,3 +1,4 @@
+import { SpritesData } from "@/constants/initialSprites";
 import GameContext from "@/context/GameContext";
 import { useContext } from "react";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
@@ -9,7 +10,11 @@ import Animated, {
     useSharedValue,
 } from "react-native-reanimated";
 
-const Sprite = (props) => {
+interface SpriteProps {
+    item: SpritesData;
+}
+
+const Sprite = (props: SpriteProps) => {
     // Shared values
     const start = useSharedValue({ x: 0, y: 0 });
     const position = useSharedValue({ x: 0, y: 0 });
@@ -19,7 +24,8 @@ const Sprite = (props) => {
     // console.log("context value", contextValue?.height);
 
     // Local Variables
-    const spriteHeight = 50;
+    const spriteHeight = 70;
+    const spriteWidth = 70;
 
     const pan = Gesture.Pan()
         .onBegin(() => {
@@ -33,7 +39,7 @@ const Sprite = (props) => {
                 minY = 0;
 
             // maxX = width - sprite width - borderRadius
-            const maxX = contextValue?.width! - spriteHeight - 4,
+            const maxX = contextValue?.width! - spriteWidth - 4,
                 maxY = contextValue?.height! - spriteHeight - 4;
 
             // update the value
@@ -87,20 +93,24 @@ const Sprite = (props) => {
         };
     });
 
+    const Image = props.item.image;
+
     return (
         <GestureDetector gesture={pan}>
             <Animated.View
                 style={[
                     {
-                        height: spriteHeight,
-                        width: spriteHeight,
-                        backgroundColor: "tomato",
+                        // height: spriteHeight,
+                        // width: spriteHeight,
+                        // backgroundColor: "tomato",
                         position: "absolute",
-                        zIndex: -1,
+                        // zIndex: -1,
                     },
                     animatedStyles,
                 ]}
-            />
+            >
+                <Image height={spriteHeight} width={spriteWidth} />
+            </Animated.View>
         </GestureDetector>
     );
 };

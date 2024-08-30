@@ -9,10 +9,10 @@ import Sprite from "./Sprite";
 import GameContext from "@/context/GameContext";
 import React, { useState } from "react";
 import { SpriteCardProps } from "./SpriteManager";
+import { useAppStore } from "@/store/store";
 
 interface GameCanvasProps {
     updateX: () => {};
-    sprites: Array<SpriteCardProps>;
 }
 
 export default function GameCanvas(props: GameCanvasProps) {
@@ -21,6 +21,8 @@ export default function GameCanvas(props: GameCanvasProps) {
         height: number;
         width: number;
     } | null>(null);
+
+    const sprites = useAppStore((state) => state.sprites);
 
     const containerMaxHeight = height * 0.6;
 
@@ -46,8 +48,8 @@ export default function GameCanvas(props: GameCanvasProps) {
                     }
                 }}
             >
-                {props.sprites.map((ele) => {
-                    return <Sprite updateX={props.updateX} />;
+                {sprites.map((ele) => {
+                    return <Sprite updateX={props.updateX} item={ele} />;
                 })}
             </View>
         </GameContext.Provider>

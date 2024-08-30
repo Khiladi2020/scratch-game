@@ -10,24 +10,31 @@ import {
 } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import React from "react";
+import SvgImages from "@/constants/SvgImages";
+import { SpritesData } from "@/constants/initialSprites";
+import { router } from "expo-router";
+import { useAppStore } from "@/store/store";
 
 export interface SpriteCardProps {
     type: "regular" | "newItem";
+    item?: SpritesData;
+    onPress?: () => {};
 }
 
-const SpriteCard: React.FC<SpriteCardProps> = ({ type = "regular" }) => {
+const SpriteCard: React.FC<SpriteCardProps> = ({
+    type = "regular",
+    item,
+    onPress,
+}) => {
     if (type == "regular") {
+        const SpriteImage = item.image;
+
         return (
-            <ThemedView
+            <TouchableOpacity
                 style={[globalStyles.borderBox, styles.spriteContainer]}
+                onPress={onPress}
             >
-                <ThemedView
-                    style={{
-                        height: 50,
-                        width: 50,
-                        backgroundColor: "tomato",
-                    }}
-                />
+                <SpriteImage height={70} />
                 <ThemedView style={styles.actionButton}>
                     <Button title="Add Action" onPress={() => {}} />
                 </ThemedView>
@@ -37,13 +44,14 @@ const SpriteCard: React.FC<SpriteCardProps> = ({ type = "regular" }) => {
                 >
                     <MaterialIcons name="delete" size={18} color={"white"} />
                 </TouchableOpacity>
-            </ThemedView>
+            </TouchableOpacity>
         );
     }
 
     return (
         <TouchableOpacity
             style={[globalStyles.borderBox, styles.spriteContainer]}
+            onPress={onPress}
         >
             <MaterialIcons name="add" size={30} />
         </TouchableOpacity>
@@ -51,20 +59,31 @@ const SpriteCard: React.FC<SpriteCardProps> = ({ type = "regular" }) => {
 };
 
 interface SpriteManagerProps {
-    sprites: Array<SpriteCardProps>;
+    onNewSpriteAddClick: () => void;
 }
 
-const SpriteManager: React.FC<SpriteManagerProps> = ({ sprites }) => {
+const SpriteManager: React.FC<SpriteManagerProps> = ({
+    onNewSpriteAddClick,
+}) => {
+    const sprites = useAppStore((state) => state.sprites);
+    console.log("sprite manager re-rendered");
+
     return (
         <ScrollView
             horizontal
             style={globalStyles.borderBox}
             contentContainerStyle={styles.container}
         >
-            {sprites?.map((details) => {
-                return <SpriteCard type="regular" />;
+            {sprites?.map((sprite, idx) => {
+                return (
+                    <SpriteCard
+                        type="regular"
+                        item={sprite}
+                        key={idx.toString()}
+                    />
+                );
             })}
-            <SpriteCard type="newItem" />
+            <SpriteCard type="newItem" onPress={onNewSpriteAddClick} />
         </ScrollView>
     );
 };
