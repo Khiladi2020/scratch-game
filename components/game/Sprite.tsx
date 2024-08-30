@@ -214,6 +214,7 @@ const Sprite = (props: SpriteProps) => {
             positionY.value = 0;
             rotateDegree.value = 0;
             spriteSpeakText.value = null;
+            start.value = { x: 0, y: 0 };
             setGameResettedToFalse();
         }
     }, [isAnimating, isGameResetted]);
