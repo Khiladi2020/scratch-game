@@ -18,6 +18,7 @@ type State = {
     sprites: Array<SpritesData>;
     movements: Array<Movement>;
     isAnimationPlaying: boolean;
+    isGameResetted: boolean;
 };
 
 type Action = {
@@ -27,12 +28,14 @@ type Action = {
     removeMovement: (movementId: string) => void;
     setAnimationState: (value: boolean) => void;
     resetGameState: () => void;
+    setGameResettedToFalse: () => void;
 };
 
 const useAppStore = create<State & Action>((set) => ({
     sprites: INITIAL_SPRITES,
     movements: [],
     isAnimationPlaying: false,
+    isGameResetted: false,
     addSprite: (newSprite) =>
         set((state) => ({ sprites: state.sprites.concat(newSprite) })),
     removeSprite: (spriteName) =>
@@ -51,11 +54,13 @@ const useAppStore = create<State & Action>((set) => ({
             movements: state.movements.filter((val) => val.id != movementId),
         })),
     setAnimationState: (newVal) => set(() => ({ isAnimationPlaying: newVal })),
+    setGameResettedToFalse: () => set(() => ({ isGameResetted: false })),
     resetGameState: () =>
         set(() => ({
             isAnimationPlaying: false,
             sprites: INITIAL_SPRITES,
             movements: [],
+            isGameResetted: true,
         })),
 }));
 

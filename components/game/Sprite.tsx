@@ -41,6 +41,12 @@ const Sprite = (props: SpriteProps) => {
         state.movements.filter((val) => val.spriteName === props.item.name)
     );
 
+    const isGameResetted = useAppStore((state) => state.isGameResetted);
+
+    const setGameResettedToFalse = useAppStore(
+        (state) => state.setGameResettedToFalse
+    );
+
     // Hooks
     const contextValue = useContext(GameContext);
     // console.log("context value", contextValue?.height);
@@ -54,7 +60,6 @@ const Sprite = (props: SpriteProps) => {
             console.log("Pan started");
         })
         .onUpdate((e) => {
-            console.log("In update logic");
             const currentX = start.value.x + e.translationX;
             const currentY = start.value.y + e.translationY;
 
@@ -204,7 +209,14 @@ const Sprite = (props: SpriteProps) => {
 
     useEffect(() => {
         if (isAnimating == true) startAnimations();
-    }, [isAnimating]);
+        if (isGameResetted === true) {
+            positionX.value = 0;
+            positionY.value = 0;
+            rotateDegree.value = 0;
+            spriteSpeakText.value = null;
+            setGameResettedToFalse();
+        }
+    }, [isAnimating, isGameResetted]);
 
     // useEffect(() => {
     //     setTimeout(() => {
@@ -266,13 +278,6 @@ const Sprite = (props: SpriteProps) => {
                     animatedStyles,
                     animatedRotationStyle,
                 ]}
-                onLayout={(e) => {
-                    console.log(
-                        "real view properties",
-                        e.nativeEvent.layout.x,
-                        e.nativeEvent.layout.y
-                    );
-                }}
             >
                 <Image height={spriteHeight} width={spriteWidth} />
                 <Animated.View style={[styles.speakView, animatedTextOpacity]}>
