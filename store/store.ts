@@ -9,8 +9,8 @@ export type Movement = {
         /** `xy-teleport` will shift it to absolute position
          * `xy-move` will move it by that number
          */
-        type: "xy-move-to" | "xy-move-by" | "rotate-to" | "rotate-by";
-        data: { x?: number; y?: number; rotate?: number };
+        type: "xy-move-to" | "xy-move-by" | "rotate-to" | "rotate-by" | "speak";
+        data: { x?: number; y?: number; rotate?: number; text?: string };
     };
 };
 
