@@ -60,7 +60,7 @@ const SpriteActionsScreen = () => {
         state.movements.filter((val) => val.spriteName == spriteName)
     );
     const CARD_WIDTH = width * 0.47;
-    console.log("ravil", spriteName, movements);
+    // console.log("ravil", spriteName, movements);
 
     const onCodeItemPress = (data: CodeData) => {
         addMovement({
@@ -85,53 +85,58 @@ const SpriteActionsScreen = () => {
                     title: `Sprite Actions for ${spriteName}`,
                 }}
             />
-            <ThemedView
-                style={[
-                    styles.card,
-                    { flexBasis: CARD_WIDTH },
-                    globalStyles.borderBox,
-                ]}
-            >
-                <ThemedText style={styles.heading}>Code</ThemedText>
-                <FlatList
-                    data={CODE_STEPS}
-                    contentContainerStyle={styles.flatList}
-                    renderItem={({ item }) => (
-                        <CodeItem
-                            name={item.name}
-                            onPress={() =>
-                                onCodeItemPress({
-                                    name: item.name,
-                                    action: item.action,
-                                })
-                            }
-                        />
-                    )}
-                    ItemSeparatorComponent={<Separator height={12} />}
-                />
-            </ThemedView>
-            <ThemedView
-                style={[
-                    styles.card,
-                    { flexBasis: CARD_WIDTH },
-                    globalStyles.borderBox,
-                ]}
-            >
-                <ThemedText style={styles.heading}>Actions</ThemedText>
-                <FlatList
-                    data={movements}
-                    contentContainerStyle={styles.flatList}
-                    renderItem={({ item }) => (
-                        <CodeItem
-                            name={item.action.name}
-                            type="action"
-                            onIconButtonPress={() =>
-                                onRemoveActionItem(item?.id!)
-                            }
-                        />
-                    )}
-                    ItemSeparatorComponent={<Separator height={12} />}
-                />
+            <ThemedText style={styles.detailText}>
+                Click on the Code block to add the action
+            </ThemedText>
+            <ThemedView style={styles.main}>
+                <ThemedView
+                    style={[
+                        styles.card,
+                        { flexBasis: CARD_WIDTH },
+                        globalStyles.borderBox,
+                    ]}
+                >
+                    <ThemedText style={styles.heading}>Code</ThemedText>
+                    <FlatList
+                        data={CODE_STEPS}
+                        contentContainerStyle={styles.flatList}
+                        renderItem={({ item }) => (
+                            <CodeItem
+                                name={item.name}
+                                onPress={() =>
+                                    onCodeItemPress({
+                                        name: item.name,
+                                        action: item.action,
+                                    })
+                                }
+                            />
+                        )}
+                        ItemSeparatorComponent={<Separator height={12} />}
+                    />
+                </ThemedView>
+                <ThemedView
+                    style={[
+                        styles.card,
+                        { flexBasis: CARD_WIDTH },
+                        globalStyles.borderBox,
+                    ]}
+                >
+                    <ThemedText style={styles.heading}>Actions</ThemedText>
+                    <FlatList
+                        data={movements}
+                        contentContainerStyle={styles.flatList}
+                        renderItem={({ item }) => (
+                            <CodeItem
+                                name={item.action.name}
+                                type="action"
+                                onIconButtonPress={() =>
+                                    onRemoveActionItem(item?.id!)
+                                }
+                            />
+                        )}
+                        ItemSeparatorComponent={<Separator height={12} />}
+                    />
+                </ThemedView>
             </ThemedView>
         </ThemedView>
     );
@@ -140,9 +145,16 @@ const SpriteActionsScreen = () => {
 const styles = StyleSheet.create({
     screen: {
         flex: 1,
+        paddingVertical: 16,
+    },
+    detailText: {
+        textAlign: "center",
+        marginBottom: 8,
+    },
+    main: {
+        flex: 1,
         flexDirection: "row",
         justifyContent: "space-around",
-        paddingVertical: 16,
     },
     flatList: {
         flex: 1,
