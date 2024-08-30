@@ -1,3 +1,4 @@
+import { ANIMATION_DURATION_DEFAULT } from "@/constants/default";
 import { SpritesData } from "@/constants/initialSprites";
 import GameContext from "@/context/GameContext";
 import { useAppStore } from "@/store/store";
@@ -20,10 +21,10 @@ interface SpriteProps {
 const Sprite = (props: SpriteProps) => {
     // Shared values
     const start = useSharedValue({ x: 0, y: 0 });
-    const position = useSharedValue({ x: 0, y: 0 });
 
     const positionX = useSharedValue(0);
     const positionY = useSharedValue(0);
+    const rotateDegree = useSharedValue(0);
 
     const isAnimating = useAppStore((state) => state.isAnimationPlaying);
     const setAnimationState = useAppStore((state) => state.setAnimationState);
@@ -45,6 +46,7 @@ const Sprite = (props: SpriteProps) => {
             console.log("Pan started");
         })
         .onUpdate((e) => {
+            console.log("In update logic");
             const currentX = start.value.x + e.translationX;
             const currentY = start.value.y + e.translationY;
 
@@ -90,30 +92,50 @@ const Sprite = (props: SpriteProps) => {
         };
     };
 
+    //#region Animation Logic
     const moveToPosition = (x: number, y: number) => {
-        console.log("i am called", x, y);
         let isXDone = false,
             isYDone = false;
 
-        const markResolved = (resolve, coord) => {
+        const markResolved = (resolve: any, coord: any) => {
             if (coord == "x") isXDone = true;
             if (coord == "y") isYDone = true;
 
             if (isXDone && isYDone) {
                 resolve("done");
-                console.log("marking as resolved");
+                // console.log("marking as resolved");
             }
         };
 
         return new Promise((resolve, reject) => {
-            positionX.value = withTiming(x, { duration: 1000 }, () => {
-                runOnJS(updateStartPos)(positionX.value, positionY.value);
-                runOnJS(markResolved)(resolve, "x");
-            });
-            positionY.value = withTiming(y, { duration: 1000 }, () => {
-                runOnJS(updateStartPos)(positionX.value, positionY.value);
-                runOnJS(markResolved)(resolve, "y");
-            });
+            positionX.value = withTiming(
+                x,
+                { duration: ANIMATION_DURATION_DEFAULT },
+                () => {
+                    runOnJS(updateStartPos)(positionX.value, positionY.value);
+                    runOnJS(markResolved)(resolve, "x");
+                }
+            );
+            positionY.value = withTiming(
+                y,
+                { duration: ANIMATION_DURATION_DEFAULT },
+                () => {
+                    runOnJS(updateStartPos)(positionX.value, positionY.value);
+                    runOnJS(markResolved)(resolve, "y");
+                }
+            );
+        });
+    };
+
+    const rotateObject = (toDegree: number) => {
+        return new Promise((resolve, reject) => {
+            rotateDegree.value = withTiming(
+                toDegree,
+                { duration: ANIMATION_DURATION_DEFAULT },
+                () => {
+                    runOnJS(resolve)("done");
+                }
+            );
         });
     };
 
@@ -121,24 +143,41 @@ const Sprite = (props: SpriteProps) => {
         console.log("animations started", JSON.stringify(movements));
         for (let i = 0; i < movements.length; i++) {
             const movement = movements[i];
-            console.log("77");
-            if (movement.action.type == "xy-move-to") {
-                console.log("99");
-                await moveToPosition(
-                    movement.action.data.x ?? positionX.value,
-                    movement.action.data.y ?? positionY.value
-                );
-            } else if (movement.action.type == "xy-move-by") {
-                await moveToPosition(
-                    positionX.value + (movement.action.data.x ?? 0),
-                    positionY.value + (movement.action.data.y ?? 0)
-                );
+
+            switch (movement.action.type) {
+                case "xy-move-to": {
+                    await moveToPosition(
+                        movement.action.data.x ?? positionX.value,
+                        movement.action.data.y ?? positionY.value
+                    );
+                    break;
+                }
+                case "xy-move-by": {
+                    await moveToPosition(
+                        positionX.value + (movement.action.data.x ?? 0),
+                        positionY.value + (movement.action.data.y ?? 0)
+                    );
+                    break;
+                }
+                case "rotate-to": {
+                    await rotateObject(
+                        movement.action.data.rotate ?? rotateDegree.value
+                    );
+                    break;
+                }
+                case "rotate-by": {
+                    await rotateObject(
+                        rotateDegree.value + (movement.action.data.rotate ?? 0)
+                    );
+                    break;
+                }
             }
         }
 
-        console.log("reset animating state");
+        // console.log("reset animating state");
         setAnimationState(false);
     };
+    //#endregion
 
     useEffect(() => {
         if (isAnimating == true) startAnimations();
@@ -161,8 +200,14 @@ const Sprite = (props: SpriteProps) => {
         runOnJS(updateDetails)(positionX.value, positionY.value);
     });
 
-    // Animated Styles
+    //#region Animated Styles
     const animatedStyles = useAnimatedStyle(() => {
+        // console.log(
+        //     "current pos",
+        //     positionX.value,
+        //     positionY.value,
+        //     rotateDegree.value
+        // );
         return {
             transform: [
                 { translateX: positionX.value },
@@ -170,6 +215,18 @@ const Sprite = (props: SpriteProps) => {
             ],
         };
     });
+
+    const animatedRotationStyle = useAnimatedStyle(() => {
+        return {
+            transform: [
+                { translateX: positionX.value },
+                { translateY: positionY.value },
+                { rotateZ: `${rotateDegree.value}deg` },
+            ],
+        };
+    });
+
+    //#endregion
 
     const Image = props.item.image;
 
@@ -185,7 +242,15 @@ const Sprite = (props: SpriteProps) => {
                         // zIndex: -1,
                     },
                     animatedStyles,
+                    animatedRotationStyle,
                 ]}
+                onLayout={(e) => {
+                    console.log(
+                        "real view properties",
+                        e.nativeEvent.layout.x,
+                        e.nativeEvent.layout.y
+                    );
+                }}
             >
                 <Image height={spriteHeight} width={spriteWidth} />
             </Animated.View>

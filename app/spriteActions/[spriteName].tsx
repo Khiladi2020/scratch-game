@@ -37,10 +37,24 @@ const CODE: Array<CodeData> = [
             },
         },
     },
-    // {
-    //     name: "Rotate 360",
-    //     action: null,
-    // },
+    {
+        name: "Rotate by 90 degree",
+        action: {
+            type: "rotate-by",
+            data: {
+                rotate: 90,
+            },
+        },
+    },
+    {
+        name: "Rotate by 180 degree",
+        action: {
+            type: "rotate-by",
+            data: {
+                rotate: 180,
+            },
+        },
+    },
     {
         name: "Go to (0,0)",
         action: {
