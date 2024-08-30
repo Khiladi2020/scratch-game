@@ -1,3 +1,4 @@
+import Separator from "@/components/Separator";
 import { ThemedView } from "@/components/ThemedView";
 import globalStyles from "@/constants/globalStyles";
 import { INITIAL_SPRITES, SpritesData } from "@/constants/initialSprites";
@@ -58,8 +59,6 @@ const SpriteDisplayItem = (props: SpriteDisplayItemProps) => {
         </TouchableOpacity>
     );
 };
-
-const Separator = () => <View style={{ height: 20 }} />;
 
 const SelectSpriteScreen = () => {
     const addSprite = useAppStore((state) => state.addSprite);
