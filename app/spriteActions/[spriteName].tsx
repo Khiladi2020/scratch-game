@@ -1,3 +1,4 @@
+import IconButton from "@/components/IconButton";
 import Separator from "@/components/Separator";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
@@ -78,11 +79,12 @@ const CODE: Array<CodeData> = [
 ];
 
 interface CodeItemProps {
+    type?: "code" | "action";
     name: CodeData["name"];
     action: CodeData["action"];
     onPress?: (data: CodeData) => void;
 }
-const CodeItem = ({ name, action, onPress }: CodeItemProps) => {
+const CodeItem = ({ name, action, onPress, type = "code" }: CodeItemProps) => {
     return (
         <TouchableOpacity
             style={styles.codeItem}
@@ -90,6 +92,13 @@ const CodeItem = ({ name, action, onPress }: CodeItemProps) => {
             onPress={() => onPress?.({ name: name, action: action })}
         >
             <ThemedText>{name}</ThemedText>
+            {type === "action" ? (
+                <IconButton
+                    name="delete"
+                    size={16}
+                    customStyles={styles.codeItem_button}
+                />
+            ) : null}
         </TouchableOpacity>
     );
 };
@@ -118,7 +127,11 @@ const SpriteActionsScreen = () => {
 
     return (
         <ThemedView style={styles.screen}>
-            <Stack.Screen options={{ presentation: "modal" }} />
+            <Stack.Screen
+                options={{
+                    title: `Sprite Actions for ${spriteName}`,
+                }}
+            />
             <ThemedView
                 style={[
                     styles.card,
@@ -129,7 +142,7 @@ const SpriteActionsScreen = () => {
                 <ThemedText style={styles.heading}>Code</ThemedText>
                 <FlatList
                     data={CODE}
-                    contentContainerStyle={{ flex: 1 }}
+                    contentContainerStyle={styles.flatList}
                     renderItem={({ item }) => (
                         <CodeItem
                             name={item.name}
@@ -137,7 +150,7 @@ const SpriteActionsScreen = () => {
                             onPress={onCodeItemPress}
                         />
                     )}
-                    ItemSeparatorComponent={<Separator height={10} />}
+                    ItemSeparatorComponent={<Separator height={12} />}
                 />
             </ThemedView>
             <ThemedView
@@ -150,14 +163,15 @@ const SpriteActionsScreen = () => {
                 <ThemedText style={styles.heading}>Actions</ThemedText>
                 <FlatList
                     data={movements}
-                    contentContainerStyle={{ flex: 1 }}
+                    contentContainerStyle={styles.flatList}
                     renderItem={({ item }) => (
                         <CodeItem
                             name={item.action.name}
                             action={item.action}
+                            type="action"
                         />
                     )}
-                    ItemSeparatorComponent={<Separator height={10} />}
+                    ItemSeparatorComponent={<Separator height={12} />}
                 />
             </ThemedView>
         </ThemedView>
@@ -170,6 +184,11 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-around",
         paddingVertical: 16,
+    },
+    flatList: {
+        flex: 1,
+        overflow: "visible",
+        paddingTop: 10,
     },
     card: {
         backgroundColor: "tomato",
@@ -188,6 +207,13 @@ const styles = StyleSheet.create({
         padding: 8,
         borderRadius: 4,
         alignItems: "center",
+        overflow: "visible",
+    },
+    codeItem_button: {
+        // top: "auto",
+        // bottom: -5,
+        backgroundColor: "tomato",
+        right: 0,
     },
 });
 

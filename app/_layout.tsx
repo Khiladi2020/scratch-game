@@ -45,7 +45,6 @@ export default function RootLayout() {
                     name="spriteActions/[spriteName]"
                     options={{
                         presentation: "modal",
-                        headerTitle: "Sprite Actions",
                     }}
                 />
             </Stack>
