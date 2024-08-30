@@ -81,15 +81,20 @@ const CODE: Array<CodeData> = [
 interface CodeItemProps {
     type?: "code" | "action";
     name: CodeData["name"];
-    action: CodeData["action"];
-    onPress?: (data: CodeData) => void;
+    onPress?: () => void;
+    onIconButtonPress?: () => void;
 }
-const CodeItem = ({ name, action, onPress, type = "code" }: CodeItemProps) => {
+const CodeItem = ({
+    name,
+    onPress,
+    type = "code",
+    onIconButtonPress,
+}: CodeItemProps) => {
     return (
         <TouchableOpacity
             style={styles.codeItem}
             activeOpacity={0.8}
-            onPress={() => onPress?.({ name: name, action: action })}
+            onPress={onPress}
         >
             <ThemedText>{name}</ThemedText>
             {type === "action" ? (
@@ -97,6 +102,7 @@ const CodeItem = ({ name, action, onPress, type = "code" }: CodeItemProps) => {
                     name="delete"
                     size={16}
                     customStyles={styles.codeItem_button}
+                    onPress={onIconButtonPress}
                 />
             ) : null}
         </TouchableOpacity>
@@ -108,6 +114,8 @@ const SpriteActionsScreen = () => {
     const { spriteName } = useLocalSearchParams<{ spriteName: string }>();
 
     const addMovement = useAppStore((state) => state.addMovement);
+    const removeMovement = useAppStore((state) => state.removeMovement);
+
     const movements = useAppStore((state) =>
         state.movements.filter((val) => val.spriteName == spriteName)
     );
@@ -123,6 +131,11 @@ const SpriteActionsScreen = () => {
                 data: data.action.data,
             },
         });
+    };
+
+    const onRemoveActionItem = (id: string) => {
+        console.log("here inside delete");
+        removeMovement(id);
     };
 
     return (
@@ -146,8 +159,12 @@ const SpriteActionsScreen = () => {
                     renderItem={({ item }) => (
                         <CodeItem
                             name={item.name}
-                            action={item.action}
-                            onPress={onCodeItemPress}
+                            onPress={() =>
+                                onCodeItemPress({
+                                    name: item.name,
+                                    action: item.action,
+                                })
+                            }
                         />
                     )}
                     ItemSeparatorComponent={<Separator height={12} />}
@@ -167,8 +184,10 @@ const SpriteActionsScreen = () => {
                     renderItem={({ item }) => (
                         <CodeItem
                             name={item.action.name}
-                            action={item.action}
                             type="action"
+                            onIconButtonPress={() =>
+                                onRemoveActionItem(item?.id!)
+                            }
                         />
                     )}
                     ItemSeparatorComponent={<Separator height={12} />}

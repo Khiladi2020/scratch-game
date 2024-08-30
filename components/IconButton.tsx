@@ -19,11 +19,13 @@ const IconButton = ({
     size = 18,
     color = "white",
     customStyles = {},
+    onPress,
 }: IconButtonProps) => {
     return (
         <TouchableOpacity
             style={[styles.iconButton, customStyles]}
             activeOpacity={0.5}
+            onPress={onPress}
         >
             <MaterialIcons name={name as any} size={size} color={color} />
         </TouchableOpacity>
