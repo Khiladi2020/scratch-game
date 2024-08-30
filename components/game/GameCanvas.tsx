@@ -48,8 +48,10 @@ export default function GameCanvas(props: GameCanvasProps) {
                     }
                 }}
             >
-                {sprites.map((ele) => {
-                    return <Sprite updateX={props.updateX} item={ele} />;
+                {sprites.map((ele, idx) => {
+                    return (
+                        <Sprite updateX={props.updateX} item={ele} key={idx} />
+                    );
                 })}
             </View>
         </GameContext.Provider>
