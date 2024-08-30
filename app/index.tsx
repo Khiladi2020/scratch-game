@@ -5,7 +5,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { INITIAL_SPRITES } from "@/constants/initialSprites";
 import { useRef, useState } from "react";
-import { ScrollView, StyleSheet } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import Cat from "@/assets/svg/cat.svg";
@@ -46,6 +46,8 @@ const HomeScreen = () => {
         });
     };
 
+    console.log("Home Screen Re-rendered");
+
     return (
         <GestureHandlerRootView>
             <SafeAreaView style={styles.application}>
@@ -56,8 +58,6 @@ const HomeScreen = () => {
                         onNewSpriteAddClick={onNewSpriteAddClick}
                         onAddActionClick={onAddActionClick}
                     />
-                    <ThemedText>Helll</ThemedText>
-                    <SvgImages.Bat />
                 </ScrollView>
             </SafeAreaView>
         </GestureHandlerRootView>
@@ -67,6 +67,8 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
     application: {
         backgroundColor: "#E8E8E8",
+        flex: 1,
+        paddingBottom: 0,
     },
     container: {
         padding: 8,
