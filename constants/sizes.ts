@@ -1,0 +1,3 @@
+const DEFAULT_ICON_SIZE = 18;
+
+export { DEFAULT_ICON_SIZE };
