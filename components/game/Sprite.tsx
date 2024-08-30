@@ -1,6 +1,7 @@
 import { SpritesData } from "@/constants/initialSprites";
 import GameContext from "@/context/GameContext";
-import { useContext } from "react";
+import { useAppStore } from "@/store/store";
+import { useContext, useEffect } from "react";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
     clamp,
@@ -8,6 +9,7 @@ import Animated, {
     useAnimatedStyle,
     useDerivedValue,
     useSharedValue,
+    withTiming,
 } from "react-native-reanimated";
 
 interface SpriteProps {
@@ -19,6 +21,16 @@ const Sprite = (props: SpriteProps) => {
     // Shared values
     const start = useSharedValue({ x: 0, y: 0 });
     const position = useSharedValue({ x: 0, y: 0 });
+
+    const positionX = useSharedValue(0);
+    const positionY = useSharedValue(0);
+
+    const isAnimating = useAppStore((state) => state.isAnimationPlaying);
+    const setAnimationState = useAppStore((state) => state.setAnimationState);
+
+    const movements = useAppStore((state) =>
+        state.movements.filter((val) => val.spriteName === props.item.name)
+    );
 
     // Hooks
     const contextValue = useContext(GameContext);
@@ -44,10 +56,8 @@ const Sprite = (props: SpriteProps) => {
                 maxY = contextValue?.height! - spriteHeight - 4;
 
             // update the value
-            position.value = {
-                x: clamp(currentX, minX, maxX!),
-                y: clamp(currentY, minY, maxY!),
-            };
+            positionX.value = clamp(currentX, minX, maxX!);
+            positionY.value = clamp(currentY, minY, maxY!);
 
             // console.log(props.detailsRef);
 
@@ -68,28 +78,95 @@ const Sprite = (props: SpriteProps) => {
         })
         .onEnd(() => {
             start.value = {
-                x: position.value.x,
-                y: position.value.y,
+                x: positionX.value,
+                y: positionY.value,
             };
         });
 
-    console.log("Sprite re-rendered");
-    const aa = (val, val2) => {
-        if (props?.updateCoordinates) {
+    const updateStartPos = (x: number, y: number) => {
+        start.value = {
+            x: x,
+            y: y,
+        };
+    };
+
+    const moveToPosition = (x: number, y: number) => {
+        console.log("i am called", x, y);
+        let isXDone = false,
+            isYDone = false;
+
+        const markResolved = (resolve, coord) => {
+            if (coord == "x") isXDone = true;
+            if (coord == "y") isYDone = true;
+
+            if (isXDone && isYDone) {
+                resolve("done");
+                console.log("marking as resolved");
+            }
+        };
+
+        return new Promise((resolve, reject) => {
+            positionX.value = withTiming(x, { duration: 1000 }, () => {
+                runOnJS(updateStartPos)(positionX.value, positionY.value);
+                runOnJS(markResolved)(resolve, "x");
+            });
+            positionY.value = withTiming(y, { duration: 1000 }, () => {
+                runOnJS(updateStartPos)(positionX.value, positionY.value);
+                runOnJS(markResolved)(resolve, "y");
+            });
+        });
+    };
+
+    const startAnimations = async () => {
+        console.log("animations started", JSON.stringify(movements));
+        for (let i = 0; i < movements.length; i++) {
+            const movement = movements[i];
+            console.log("77");
+            if (movement.action.type == "xy-move-to") {
+                console.log("99");
+                await moveToPosition(
+                    movement.action.data.x ?? positionX.value,
+                    movement.action.data.y ?? positionY.value
+                );
+            } else if (movement.action.type == "xy-move-by") {
+                await moveToPosition(
+                    positionX.value + (movement.action.data.x ?? 0),
+                    positionY.value + (movement.action.data.y ?? 0)
+                );
+            }
+        }
+
+        console.log("reset animating state");
+        setAnimationState(false);
+    };
+
+    useEffect(() => {
+        if (isAnimating == true) startAnimations();
+    }, [isAnimating]);
+
+    // useEffect(() => {
+    //     setTimeout(() => {
+    //         moveToPosition(200, 200);
+    //     }, 1000);
+    // }, []);
+
+    console.log("Sprite re-rendered", isAnimating);
+    const updateDetails = (val, val2) => {
+        if (props?.updateCoordinates && isAnimating == false) {
             props?.updateCoordinates(props.item.name, val, val2);
         }
     };
 
     useDerivedValue(() => {
-        runOnJS(aa)(position.value.x, position.value.y);
+        runOnJS(updateDetails)(positionX.value, positionY.value);
     });
 
     // Animated Styles
     const animatedStyles = useAnimatedStyle(() => {
         return {
             transform: [
-                { translateX: position.value.x },
-                { translateY: position.value.y },
+                { translateX: positionX.value },
+                { translateY: positionY.value },
             ],
         };
     });

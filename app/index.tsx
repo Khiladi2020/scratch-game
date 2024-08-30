@@ -11,6 +11,7 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import Cat from "@/assets/svg/cat.svg";
 import SvgImages from "@/constants/SvgImages";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
+import { Movement } from "@/store/store";
 
 const HomeScreen = () => {
     const params = useLocalSearchParams();

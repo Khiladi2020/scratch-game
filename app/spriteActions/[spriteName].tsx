@@ -16,30 +16,52 @@ import {
     useWindowDimensions,
 } from "react-native";
 
-const CODE = [
+type CodeData = { name: string; action: Omit<Movement["action"], "name"> };
+
+const CODE: Array<CodeData> = [
     {
         name: "Move X by 50",
-        action: null,
+        action: {
+            type: "xy-move-by",
+            data: {
+                x: 50,
+            },
+        },
     },
     {
         name: "Move Y by 50",
-        action: null,
+        action: {
+            type: "xy-move-by",
+            data: {
+                y: 50,
+            },
+        },
     },
-    {
-        name: "Rotate 360",
-        action: null,
-    },
+    // {
+    //     name: "Rotate 360",
+    //     action: null,
+    // },
     {
         name: "Go to (0,0)",
-        action: null,
+        action: {
+            type: "xy-move-to",
+            data: {
+                x: 0,
+                y: 0,
+            },
+        },
     },
     {
         name: "Go to random position",
-        action: null,
+        action: {
+            type: "xy-move-to",
+            data: {
+                x: 100,
+                y: 300,
+            },
+        },
     },
 ];
-
-type CodeData = (typeof CODE)[0];
 
 interface CodeItemProps {
     name: CodeData["name"];
@@ -72,7 +94,11 @@ const SpriteActionsScreen = () => {
     const onCodeItemPress = (data: CodeData) => {
         addMovement({
             spriteName: spriteName,
-            action: { name: data.name, data: data.action },
+            action: {
+                name: data.name,
+                type: data.action.type,
+                data: data.action.data,
+            },
         });
     };
 

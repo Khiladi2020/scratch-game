@@ -7,6 +7,11 @@ const globalStyles = StyleSheet.create({
         borderWidth: 2,
         borderRadius: 8,
     },
+    iconButton: {
+        padding: 4,
+        borderRadius: 99,
+        position: "absolute",
+    },
 });
 
 export default globalStyles;
