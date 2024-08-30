@@ -12,6 +12,7 @@ import {
 } from "expo-router";
 import { ReactElement } from "react";
 import {
+    Alert,
     FlatList,
     StyleSheet,
     Text,
@@ -62,7 +63,18 @@ const SpriteDisplayItem = (props: SpriteDisplayItemProps) => {
 
 const SelectSpriteScreen = () => {
     const addSprite = useAppStore((state) => state.addSprite);
+    const sprites = useAppStore((state) => state.sprites);
+
     const onPress = (item: SpritesData) => {
+        const filterdData = sprites.filter((val) => val.name == item.name);
+        if (filterdData.length > 0) {
+            Alert.alert(
+                "Oops!",
+                `${item.name} sprite is already added. Choose another sprite`
+            );
+            return;
+        }
+
         addSprite(item);
         router.back();
     };

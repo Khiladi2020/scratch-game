@@ -14,17 +14,20 @@ import SvgImages from "@/constants/SvgImages";
 import { SpritesData } from "@/constants/initialSprites";
 import { router } from "expo-router";
 import { useAppStore } from "@/store/store";
+import IconButton from "../IconButton";
 
 export interface SpriteCardProps {
     type: "regular" | "newItem";
     item?: SpritesData;
     onPress?: (name: string) => void;
+    onIconButtonPress?: () => void;
 }
 
 const SpriteCard: React.FC<SpriteCardProps> = ({
     type = "regular",
     item,
     onPress,
+    onIconButtonPress,
 }) => {
     if (type == "regular") {
         const SpriteImage = item.image;
@@ -34,19 +37,14 @@ const SpriteCard: React.FC<SpriteCardProps> = ({
                 style={[globalStyles.borderBox, styles.spriteContainer]}
                 onPress={() => onPress?.(item?.name!)}
             >
-                <SpriteImage height={70} />
+                <SpriteImage height={70} width={70} />
                 <ThemedView style={styles.actionButton}>
                     <Button
                         title="Add Action"
                         onPress={() => onPress?.(item?.name!)}
                     />
                 </ThemedView>
-                <TouchableOpacity
-                    style={styles.deleteButton}
-                    activeOpacity={0.5}
-                >
-                    <MaterialIcons name="delete" size={18} color={"white"} />
-                </TouchableOpacity>
+                <IconButton name="delete" onPress={onIconButtonPress} />
             </TouchableOpacity>
         );
     }
@@ -71,6 +69,7 @@ const SpriteManager: React.FC<SpriteManagerProps> = ({
     onAddActionClick,
 }) => {
     const sprites = useAppStore((state) => state.sprites);
+    const removeSprite = useAppStore((state) => state.removeSprite);
     console.log("sprite manager re-rendered");
 
     return (
@@ -86,6 +85,7 @@ const SpriteManager: React.FC<SpriteManagerProps> = ({
                         item={sprite}
                         key={idx.toString()}
                         onPress={onAddActionClick}
+                        onIconButtonPress={() => removeSprite(sprite.name)}
                     />
                 );
             })}
@@ -106,6 +106,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         marginRight: 12,
         minWidth: 120,
+        minHeight: 120,
     },
     actionButton: {
         bottom: 0,

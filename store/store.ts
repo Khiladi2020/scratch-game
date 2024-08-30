@@ -22,6 +22,7 @@ type State = {
 
 type Action = {
     addSprite: (newSprite: SpritesData) => void;
+    removeSprite: (spriteName: string) => void;
     addMovement: (newMovement: Movement) => void;
     removeMovement: (movementId: string) => void;
     setAnimationState: (value: boolean) => void;
@@ -33,6 +34,10 @@ const useAppStore = create<State & Action>((set) => ({
     isAnimationPlaying: false,
     addSprite: (newSprite) =>
         set((state) => ({ sprites: state.sprites.concat(newSprite) })),
+    removeSprite: (spriteName) =>
+        set((state) => ({
+            sprites: state.sprites.filter((val) => val.name != spriteName),
+        })),
     addMovement: (newMovement) =>
         set((state) => ({
             movements: state.movements.concat({
