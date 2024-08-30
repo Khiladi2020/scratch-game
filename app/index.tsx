@@ -14,14 +14,19 @@ import { router, useLocalSearchParams, useNavigation } from "expo-router";
 
 const HomeScreen = () => {
     const params = useLocalSearchParams();
-    const spriteDetailsRef = useRef(null);
+    const spriteDetailsRef = useRef<{
+        updatePositionX: any;
+        updatePositionY: any;
+        updateName: any;
+    }>(null);
     const [sprites] = useState(INITIAL_SPRITES);
 
-    const updateValue = (valX, valY) => {
+    const updateValue = (spriteName: string, valX: number, valY: number) => {
         // console.log("updated value of raivl", val);
         if (spriteDetailsRef.current) {
             spriteDetailsRef.current?.updatePositionX(valX?.toFixed(2));
             spriteDetailsRef.current?.updatePositionY(valY?.toFixed(2));
+            spriteDetailsRef.current?.updateName(spriteName);
         }
     };
 
@@ -44,7 +49,7 @@ const HomeScreen = () => {
         <GestureHandlerRootView>
             <SafeAreaView style={styles.application}>
                 <ScrollView contentContainerStyle={styles.container}>
-                    <GameCanvas updateX={updateValue} />
+                    <GameCanvas updateCoordinates={updateValue} />
                     <SpriteDetails ref={spriteDetailsRef} />
                     <SpriteManager
                         onNewSpriteAddClick={onNewSpriteAddClick}

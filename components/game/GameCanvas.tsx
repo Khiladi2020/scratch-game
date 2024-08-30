@@ -12,7 +12,7 @@ import { SpriteCardProps } from "./SpriteManager";
 import { useAppStore } from "@/store/store";
 
 interface GameCanvasProps {
-    updateX: () => {};
+    updateCoordinates: (name: string, a: number, b: number) => void;
 }
 
 export default function GameCanvas(props: GameCanvasProps) {
@@ -50,7 +50,11 @@ export default function GameCanvas(props: GameCanvasProps) {
             >
                 {sprites.map((ele, idx) => {
                     return (
-                        <Sprite updateX={props.updateX} item={ele} key={idx} />
+                        <Sprite
+                            updateCoordinates={props.updateCoordinates}
+                            item={ele}
+                            key={idx}
+                        />
                     );
                 })}
             </View>

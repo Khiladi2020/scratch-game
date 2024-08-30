@@ -12,6 +12,7 @@ import Animated, {
 
 interface SpriteProps {
     item: SpritesData;
+    updateCoordinates: (name: string, a: any, b: any) => void;
 }
 
 const Sprite = (props: SpriteProps) => {
@@ -74,8 +75,8 @@ const Sprite = (props: SpriteProps) => {
 
     console.log("Sprite re-rendered");
     const aa = (val, val2) => {
-        if (props?.updateX) {
-            props?.updateX(val, val2);
+        if (props?.updateCoordinates) {
+            props?.updateCoordinates(props.item.name, val, val2);
         }
     };
 

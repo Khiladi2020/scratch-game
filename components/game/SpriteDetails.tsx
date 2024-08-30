@@ -7,6 +7,7 @@ import { forwardRef, useImperativeHandle, useState } from "react";
 const SpriteDetails = forwardRef((props, ref) => {
     const [positionX, setPositionX] = useState(0);
     const [positionY, setPositionY] = useState(0);
+    const [name, setName] = useState("Cat");
 
     useImperativeHandle(ref, () => {
         return {
@@ -18,6 +19,10 @@ const SpriteDetails = forwardRef((props, ref) => {
             updatePositionY: (val: number) => {
                 setPositionY(val);
             },
+
+            updateName: (val: string) => {
+                setName(val);
+            },
         };
     });
 
@@ -28,7 +33,7 @@ const SpriteDetails = forwardRef((props, ref) => {
             <ThemedView style={styles.itemContainer}>
                 <ThemedText style={styles.itemTitle}>Sprite</ThemedText>
                 <ThemedView style={styles.valueBox}>
-                    <TextInput value="Cat" />
+                    <TextInput value={name} />
                 </ThemedView>
             </ThemedView>
             <ThemedView style={styles.itemContainer}>
