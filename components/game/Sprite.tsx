@@ -2,7 +2,7 @@ import { ANIMATION_DURATION_DEFAULT } from "@/constants/default";
 import { SpritesData } from "@/constants/initialSprites";
 import GameContext from "@/context/GameContext";
 import { useAppStore } from "@/store/store";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
     clamp,
@@ -12,6 +12,9 @@ import Animated, {
     useSharedValue,
     withTiming,
 } from "react-native-reanimated";
+import { ThemedView } from "../ThemedView";
+import { ThemedText } from "../ThemedText";
+import { StyleSheet } from "react-native";
 
 interface SpriteProps {
     item: SpritesData;
@@ -20,11 +23,16 @@ interface SpriteProps {
 
 const Sprite = (props: SpriteProps) => {
     // Shared values
+    const [speakTextState, setSpeakTextState] = useState("Hi");
+
     const start = useSharedValue({ x: 0, y: 0 });
 
     const positionX = useSharedValue(0);
     const positionY = useSharedValue(0);
     const rotateDegree = useSharedValue(0);
+    const spriteSpeakText = useSharedValue<string | null>(null);
+
+    const textRef = useRef(null);
 
     const isAnimating = useAppStore((state) => state.isAnimationPlaying);
     const setAnimationState = useAppStore((state) => state.setAnimationState);
@@ -139,6 +147,16 @@ const Sprite = (props: SpriteProps) => {
         });
     };
 
+    const speakText = (text: string) => {
+        return new Promise((resolve) => {
+            spriteSpeakText.value = text;
+            setTimeout(() => {
+                spriteSpeakText.value = null;
+                resolve("done");
+            }, 2000);
+        });
+    };
+
     const startAnimations = async () => {
         console.log("animations started", JSON.stringify(movements));
         for (let i = 0; i < movements.length; i++) {
@@ -171,10 +189,15 @@ const Sprite = (props: SpriteProps) => {
                     );
                     break;
                 }
+                case "speak": {
+                    setSpeakTextState(movement.action.data.text ?? "Hi");
+                    await speakText(movement.action.data.text ?? "Hi");
+                    break;
+                }
             }
         }
 
-        // console.log("reset animating state");
+        console.log("reset animating state");
         setAnimationState(false);
     };
     //#endregion
@@ -226,6 +249,11 @@ const Sprite = (props: SpriteProps) => {
         };
     });
 
+    const animatedTextOpacity = useAnimatedStyle(() => {
+        return {
+            opacity: spriteSpeakText.value ? 1 : 0,
+        };
+    });
     //#endregion
 
     const Image = props.item.image;
@@ -234,13 +262,7 @@ const Sprite = (props: SpriteProps) => {
         <GestureDetector gesture={pan}>
             <Animated.View
                 style={[
-                    {
-                        // height: spriteHeight,
-                        // width: spriteHeight,
-                        // backgroundColor: "tomato",
-                        position: "absolute",
-                        // zIndex: -1,
-                    },
+                    styles.container,
                     animatedStyles,
                     animatedRotationStyle,
                 ]}
@@ -253,9 +275,32 @@ const Sprite = (props: SpriteProps) => {
                 }}
             >
                 <Image height={spriteHeight} width={spriteWidth} />
+                <Animated.View style={[styles.speakView, animatedTextOpacity]}>
+                    <ThemedText style={styles.speakText} passedRef={textRef}>
+                        {speakTextState}
+                    </ThemedText>
+                </Animated.View>
             </Animated.View>
         </GestureDetector>
     );
 };
+
+const styles = StyleSheet.create({
+    container: {
+        position: "absolute",
+        flexDirection: "row",
+        alignItems: "flex-start",
+    },
+    speakView: {
+        paddingVertical: 2,
+        paddingHorizontal: 8,
+        borderRadius: 8,
+
+        backgroundColor: "#A9A9A9",
+    },
+    speakText: {
+        color: "white",
+    },
+});
 
 export default Sprite;
