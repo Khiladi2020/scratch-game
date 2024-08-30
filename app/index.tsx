@@ -33,13 +33,23 @@ const HomeScreen = () => {
         router.push({ pathname: "/selectSprite" });
     };
 
+    const onAddActionClick = (name: string) => {
+        router.push({
+            pathname: "/spriteActions/[spriteName]",
+            params: { spriteName: name },
+        });
+    };
+
     return (
         <GestureHandlerRootView>
             <SafeAreaView style={styles.application}>
                 <ScrollView contentContainerStyle={styles.container}>
                     <GameCanvas updateX={updateValue} />
                     <SpriteDetails ref={spriteDetailsRef} />
-                    <SpriteManager onNewSpriteAddClick={onNewSpriteAddClick} />
+                    <SpriteManager
+                        onNewSpriteAddClick={onNewSpriteAddClick}
+                        onAddActionClick={onAddActionClick}
+                    />
                     <ThemedText>Helll</ThemedText>
                     <SvgImages.Bat />
                 </ScrollView>

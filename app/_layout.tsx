@@ -31,7 +31,6 @@ export default function RootLayout() {
     }
 
     return (
-        <
         <ThemeProvider
             value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
         >
@@ -41,6 +40,13 @@ export default function RootLayout() {
                 <Stack.Screen
                     name="selectSprite"
                     options={{ presentation: "modal" }}
+                />
+                <Stack.Screen
+                    name="spriteActions/[spriteName]"
+                    options={{
+                        presentation: "modal",
+                        headerTitle: "Sprite Actions",
+                    }}
                 />
             </Stack>
         </ThemeProvider>
