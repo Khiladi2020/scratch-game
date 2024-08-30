@@ -41,6 +41,26 @@ const ALL_SPRITES = [
         name: "Gobo",
         image: SvgImages.Gobo,
     },
+    {
+        name: "Dragon",
+        image: SvgImages.Dragon,
+    },
+    {
+        name: "Dog",
+        image: SvgImages.Dog,
+    },
+    {
+        name: "Monkey",
+        image: SvgImages.Monkey,
+    },
+    {
+        name: "Dinosaur",
+        image: SvgImages.Dinosaur,
+    },
+    {
+        name: "Giga",
+        image: SvgImages.Giga,
+    },
 ];
 
 interface SpriteDisplayItemProps {
