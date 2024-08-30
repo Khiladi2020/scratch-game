@@ -32,6 +32,7 @@ export default function GameCanvas(props: GameCanvasProps) {
 
     const sprites = useAppStore((state) => state.sprites);
     const setAnimationState = useAppStore((state) => state.setAnimationState);
+    const resetGameState = useAppStore((state) => state.resetGameState);
 
     const containerMaxHeight = height * 0.6;
 
@@ -70,6 +71,9 @@ export default function GameCanvas(props: GameCanvasProps) {
                 <TouchableOpacity
                     style={styles.resetButton}
                     activeOpacity={0.7}
+                    onPress={() => {
+                        resetGameState();
+                    }}
                 >
                     <MaterialIcons
                         name="refresh"

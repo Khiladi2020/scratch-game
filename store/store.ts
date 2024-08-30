@@ -26,6 +26,7 @@ type Action = {
     addMovement: (newMovement: Movement) => void;
     removeMovement: (movementId: string) => void;
     setAnimationState: (value: boolean) => void;
+    resetGameState: () => void;
 };
 
 const useAppStore = create<State & Action>((set) => ({
@@ -50,6 +51,12 @@ const useAppStore = create<State & Action>((set) => ({
             movements: state.movements.filter((val) => val.id != movementId),
         })),
     setAnimationState: (newVal) => set(() => ({ isAnimationPlaying: newVal })),
+    resetGameState: () =>
+        set(() => ({
+            isAnimationPlaying: false,
+            sprites: INITIAL_SPRITES,
+            movements: [],
+        })),
 }));
 
 export { useAppStore };
