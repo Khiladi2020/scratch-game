@@ -18,7 +18,7 @@ import { useAppStore } from "@/store/store";
 export interface SpriteCardProps {
     type: "regular" | "newItem";
     item?: SpritesData;
-    onPress?: () => {};
+    onPress?: (name: string) => void;
 }
 
 const SpriteCard: React.FC<SpriteCardProps> = ({
@@ -32,11 +32,14 @@ const SpriteCard: React.FC<SpriteCardProps> = ({
         return (
             <TouchableOpacity
                 style={[globalStyles.borderBox, styles.spriteContainer]}
-                onPress={onPress}
+                onPress={() => onPress?.(item?.name!)}
             >
                 <SpriteImage height={70} />
                 <ThemedView style={styles.actionButton}>
-                    <Button title="Add Action" onPress={() => {}} />
+                    <Button
+                        title="Add Action"
+                        onPress={() => onPress?.(item?.name!)}
+                    />
                 </ThemedView>
                 <TouchableOpacity
                     style={styles.deleteButton}
@@ -60,10 +63,12 @@ const SpriteCard: React.FC<SpriteCardProps> = ({
 
 interface SpriteManagerProps {
     onNewSpriteAddClick: () => void;
+    onAddActionClick: (name: string) => void;
 }
 
 const SpriteManager: React.FC<SpriteManagerProps> = ({
     onNewSpriteAddClick,
+    onAddActionClick,
 }) => {
     const sprites = useAppStore((state) => state.sprites);
     console.log("sprite manager re-rendered");
@@ -80,6 +85,7 @@ const SpriteManager: React.FC<SpriteManagerProps> = ({
                         type="regular"
                         item={sprite}
                         key={idx.toString()}
+                        onPress={onAddActionClick}
                     />
                 );
             })}
