@@ -5,7 +5,6 @@ import Elephant from "@/assets/svg/elephant.svg";
 import Gobo from "@/assets/svg/gobo.svg";
 import Dinosaur from "@/assets/svg/dinosaur.svg";
 import Dog from "@/assets/svg/dog.svg";
-import Dragon from "@/assets/svg/dragon.svg";
 import Monkey from "@/assets/svg/monkey.svg";
 import Giga from "@/assets/svg/giga.svg";
 
@@ -17,7 +16,6 @@ const SvgImages = {
     Gobo,
     Dinosaur,
     Dog,
-    Dragon,
     Monkey,
     Giga,
 };

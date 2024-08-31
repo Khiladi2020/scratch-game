@@ -42,10 +42,6 @@ const ALL_SPRITES = [
         image: SvgImages.Gobo,
     },
     {
-        name: "Dragon",
-        image: SvgImages.Dragon,
-    },
-    {
         name: "Dog",
         image: SvgImages.Dog,
     },
