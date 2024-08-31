@@ -10,6 +10,9 @@
         "web": "expo start --web",
         "test": "jest --watchAll",
         "lint": "expo lint",
+        "build-dev:android": "npx expo run:android",
+        "build-apk:android": "eas build --platform android --local",
+        "patch-expo": "patch-package expo-modules-core",
         "postinstall": "patch-package"
     },
     "jest": {
